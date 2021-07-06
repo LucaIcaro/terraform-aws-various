@@ -20,7 +20,7 @@ resource "aws_efs_mount_target" "alpha" {
   file_system_id = aws_efs_file_system.testefs.id
   subnet_id      = each.value
 
-  security_groups = []
+  security_groups = [ aws_security_group.testefs.id ]
 }
 
 resource "aws_security_group" "testefs" {
