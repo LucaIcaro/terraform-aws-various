@@ -27,7 +27,6 @@ resource "aws_instance" "server" {
 
   tags = {
     Name = "Test-${random_pet.server_name.id}"
-    env  = "test"
   }
 }
 
@@ -51,4 +50,13 @@ resource "aws_security_group_rule" "openall" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.server.id
+}
+
+resource "aws_security_group_rule" "efs" {
+  type                     = "egress"
+  from_port                = 2049
+  to_port                  = 2049
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.testefs.id
+  security_group_id        = aws_security_group.server.id
 }
