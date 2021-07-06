@@ -27,7 +27,7 @@ resource "aws_security_group" "testefs" {
   name = "${random_pet.server_name.id}-efs"
 }
 
-resource "aws_security_group_rule" "testefs" {
+resource "aws_security_group_rule" "efs_ec2" {
   type                     = "ingress"
   from_port                = 2049
   to_port                  = 2049
@@ -36,3 +36,24 @@ resource "aws_security_group_rule" "testefs" {
   security_group_id        = aws_security_group.testefs.id
 }
 
+resource "aws_security_group_rule" "efs_datasync" {
+  type                     = "ingress"
+  from_port                = 2049
+  to_port                  = 2049
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.datasyncsg.id
+  security_group_id        = aws_security_group.testefs.id
+}
+
+resource "aws_security_group" "datasyncsg" {
+  name = "${random_pet.server_name.id}-datasync"
+}
+
+resource "aws_security_group_rule" "datasync_efs" {
+  type                     = "egress"
+  from_port                = 2049
+  to_port                  = 2049
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.testefs.id
+  security_group_id        = aws_security_group.datasyncsg.id
+}
